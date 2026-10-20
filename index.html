@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fabric Analyst in a Day — UB Technology Innovations Inc.</title>
+  <meta name="description" content="Interactive audience discovery and quiz platform for Fabric Analyst in a Day by UB Technology Innovations Inc.">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Clean Light Fabric Theme Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Company Logo Background Watermark with Low Opacity -->
+  <img src="assets/ubti-logo.svg" alt="UB Technology Innovations Watermark" class="bg-watermark-logo">
+
+  <!-- Subtle Light Ambient Background -->
+  <div class="bg-mesh"></div>
+  <div class="bg-grid-pattern"></div>
+
+  <!-- Header with Official Fabric Icon & Company Logo -->
+  <header class="app-header">
+    <a href="index.html" class="brand-wrapper">
+      <img src="assets/fabric-icon.svg" alt="Fabric Icon" class="fabric-icon-img">
+      <div class="brand-info">
+        <h1>Fabric Analyst in a Day</h1>
+        <p>UB Technology Innovations Inc. • Interactive Discovery Challenge</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <!-- Sound FX Toggle Button -->
+      <button class="btn-icon" id="sound-toggle-btn" aria-label="Toggle Sound Effects" title="Mute/Unmute Audio">
+        <i class="bi bi-volume-up-fill"></i>
+      </button>
+      <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." class="company-header-logo">
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       SCREEN 1: WELCOME & REGISTRATION VIEW
+       ========================================================================= -->
+  <main id="view-welcome" class="container">
+    <div class="welcome-hero">
+      
+      <!-- Company Logo Centered on Page -->
+      <div class="welcome-company-logo-wrap">
+        <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." class="welcome-main-logo">
+      </div>
+
+      <div class="hero-pill-badge">
+        <img src="assets/fabric-icon.svg" width="20" height="20" alt="Fabric" style="vertical-align: middle;">
+        <span>Interactive Audience Discovery & Knowledge Challenge</span>
+      </div>
+
+      <h2 class="hero-title">
+        Discover Your Data. <br>
+        <span class="text-gradient">Explore Fabric.</span>
+      </h2>
+
+      <p class="hero-subtitle">
+        Welcome to the <strong>UB Technology Innovations Inc.</strong> interactive session! Tell us about your current data platform landscape, test your Fabric knowledge, and shape today's live demonstrations.
+      </p>
+
+      <div class="hero-stats-strip">
+        <div class="stat-chip">
+          <span class="stat-chip-num">16</span>
+          <span class="stat-chip-label">Curated Questions</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-chip-num">⚡ Speed</span>
+          <span class="stat-chip-label">Bonus Points</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-chip-num">🏆 Live</span>
+          <span class="stat-chip-label">Standings</span>
+        </div>
+      </div>
+
+      <!-- Registration Form Card -->
+      <div class="registration-card">
+        <form id="registration-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="reg-name">Your Full Name <span class="req">*</span></label>
+            <input type="text" id="reg-name" class="form-input" placeholder="e.g. Alex Morgan" required autocomplete="name">
+            <div id="name-feedback" class="input-feedback">Please enter your name to participate.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Work Email Address <span class="req">*</span></label>
+            <input type="email" id="reg-email" class="form-input" placeholder="e.g. alex.morgan@company.com" required autocomplete="email">
+            <div id="email-feedback" class="input-feedback">Please enter a valid business email address.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-company">Organization / Company Name</label>
+            <input type="text" id="reg-company" class="form-input" placeholder="e.g. Contoso Global" autocomplete="organization">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-team">Team / Department <span class="text-muted">(Optional)</span></label>
+            <input type="text" id="reg-team" class="form-input" placeholder="e.g. Data Analytics / Power BI COE">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="btn-enter-quiz" style="width: 100%; margin-top: 0.5rem;">
+            <span>Enter Quiz Challenge</span>
+            <i class="bi bi-arrow-right-circle-fill"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- =========================================================================
+       SCREEN 2: QUIZ GAMEPLAY VIEW
+       ========================================================================= -->
+  <main id="view-quiz" class="container d-none">
+    <!-- Top Metadata Bar -->
+    <div class="quiz-top-bar">
+      <div class="quiz-meta">
+        <span class="q-counter-chip" id="quiz-counter">Question 1 of 15</span>
+        <span class="badge badge-teal" id="quiz-category">
+          <i class="bi bi-tag-fill"></i> Data Landscape
+        </span>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <!-- Live Score Counter -->
+        <div class="score-chip">
+          <i class="bi bi-trophy-fill text-warning"></i>
+          <span id="quiz-current-score">0 pts</span>
+        </div>
+
+        <!-- Circular Countdown Timer -->
+        <div class="timer-container" id="quiz-timer-wrap">
+          <div class="timer-circle-wrap">
+            <svg class="timer-svg" viewBox="0 0 48 48">
+              <circle class="timer-circle-bg" cx="24" cy="24" r="20"></circle>
+              <circle class="timer-circle-val" id="timer-svg-circle" cx="24" cy="24" r="20"></circle>
+            </svg>
+            <span class="timer-text" id="timer-val-text">25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Fill Bar -->
+    <div class="quiz-progress-bar-container">
+      <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+    </div>
+
+    <!-- Question Card -->
+    <section class="glass-card question-card">
+      <h2 class="question-title" id="question-title">Loading Question...</h2>
+      <p class="question-explanation-hint" id="question-hint"></p>
+
+      <!-- Answer options container (Populated dynamically) -->
+      <div id="answers-container"></div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       FEEDBACK OVERLAY
+       ========================================================================= -->
+  <div class="feedback-overlay" id="feedback-overlay" role="dialog" aria-modal="true">
+    <div class="feedback-card">
+      <div class="feedback-icon-bubble" id="feedback-icon-bubble">
+        <i class="bi bi-check-lg"></i>
+      </div>
+      <h3 class="feedback-title" id="feedback-title">Brilliant!</h3>
+      <div class="points-pill positive" id="feedback-points-pill">+100 Points</div>
+
+      <div class="feedback-details" id="feedback-details"></div>
+
+      <button class="btn btn-primary btn-lg" id="feedback-continue-btn" style="width: 100%;">
+        <span>Continue to Next Question</span>
+        <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SCREEN 3: RESULTS & PODIUM VIEW
+       ========================================================================= -->
+  <main id="view-results" class="container d-none">
+    <div class="results-hero">
+      <div class="celebration-badge">
+        <i class="bi bi-award-fill"></i>
+        <span>Fabric Challenge Completed!</span>
+      </div>
+
+      <h2 class="hero-title text-gradient" id="results-greeting">Outstanding Job!</h2>
+
+      <!-- Score Card -->
+      <div class="score-display-card">
+        <div class="score-counter-huge" id="results-score-num">0</div>
+        <div class="score-sublabel">Total Points Earned</div>
+      </div>
+
+      <!-- 4-Metrics Strip -->
+      <div class="results-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-num" id="res-metric-answered">0/15</span>
+          <span class="metric-label">Questions Completed</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num text-teal" id="res-metric-correct">0/2</span>
+          <span class="metric-label">Knowledge Accuracy</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num text-cyan" id="res-metric-speed">+0</span>
+          <span class="metric-label">Speed Bonus</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-num text-warning" id="res-metric-rank">#1</span>
+          <span class="metric-label">Session Rank</span>
+        </div>
+      </div>
+
+      <!-- 3-Tier Podium -->
+      <section class="podium-section">
+        <h3 class="section-heading">🏆 Session Top Performers</h3>
+        <p class="section-subheading">Based on responses collected in this device's browser</p>
+
+        <div class="podium-container">
+          <!-- 2nd Place -->
+          <div class="podium-place second">
+            <div class="podium-avatar" id="podium-2-avatar">2</div>
+            <div class="podium-name" id="podium-2-name">--</div>
+            <div class="podium-score" id="podium-2-score">--</div>
+            <div class="podium-bar">2</div>
+          </div>
+
+          <!-- 1st Place -->
+          <div class="podium-place first">
+            <div class="podium-avatar" id="podium-1-avatar">👑</div>
+            <div class="podium-name" id="podium-1-name">--</div>
+            <div class="podium-score" id="podium-1-score">--</div>
+            <div class="podium-bar">1</div>
+          </div>
+
+          <!-- 3rd Place -->
+          <div class="podium-place third">
+            <div class="podium-avatar" id="podium-3-avatar">3</div>
+            <div class="podium-name" id="podium-3-name">--</div>
+            <div class="podium-score" id="podium-3-score">--</div>
+            <div class="podium-bar">3</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Local Leaderboard List -->
+      <section class="leaderboard-section text-start">
+        <h4 class="mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-list-ol text-teal"></i> Leaderboard Standings
+        </h4>
+        <div class="leaderboard-list" id="leaderboard-list-body"></div>
+      </section>
+
+      <!-- Action Buttons -->
+      <div class="results-actions">
+        <button class="btn btn-primary" id="btn-restart-quiz">
+          <i class="bi bi-arrow-repeat"></i>
+          <span>Register Next Participant</span>
+        </button>
+
+        <button class="btn btn-outline" id="btn-download-my-summary">
+          <i class="bi bi-download"></i>
+          <span>Download My Summary (JSON)</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Sleek Compact Footer -->
+  <footer class="app-footer">
+    <div class="container text-center">
+      <p class="footer-copyright">
+        &copy; 2026 <a href="https://ubtiinc.com/" target="_blank" rel="noopener noreferrer">UB Technology Innovations Inc.</a> All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

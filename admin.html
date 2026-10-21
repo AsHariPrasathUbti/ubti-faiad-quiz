@@ -19,6 +19,13 @@
 
   <!-- Application Stylesheet in Light Theme -->
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Immediate Authentication Guard -->
+  <script>
+    if (sessionStorage.getItem('ubti_admin_auth_v1') !== 'true') {
+      window.location.replace('ubtiadmin.html');
+    }
+  </script>
 </head>
 <body>
 
@@ -31,7 +38,7 @@
 
   <!-- Compact Sleek Admin Header with Company Logo -->
   <header class="app-header admin-compact">
-    <a href="ubtiadmin.html" class="brand-wrapper">
+    <a href="admin.html" class="brand-wrapper">
       <img src="assets/fabric-icon.svg" alt="Fabric" class="fabric-icon-img">
       <div class="brand-info">
         <h1>Fabric Analyst in a Day — Admin Console</h1>
@@ -46,8 +53,8 @@
         <span>Participant View</span>
       </a>
 
-      <!-- Authenticated Presenter Action Group (Hidden when not signed in) -->
-      <div id="admin-actions-bar" class="d-none" style="display: none; align-items: center; gap: 0.5rem;">
+      <!-- Authenticated Presenter Action Group -->
+      <div id="admin-actions-bar" style="display: inline-flex; align-items: center; gap: 0.5rem;">
         <!-- Quick Demo Seed Data -->
         <button class="btn btn-outline btn-sm" id="btn-seed-sample-data" title="Populate sample attendees for rehearsal">
           <i class="bi bi-magic text-cyan"></i>
@@ -70,65 +77,9 @@
   </header>
 
   <!-- =========================================================================
-       ADMIN LOGIN VIEW (Shown when unauthenticated)
+       ADMIN DASHBOARD VIEW (Authenticated)
        ========================================================================= -->
-  <main id="view-admin-login" class="container d-flex align-items-center justify-content-center" style="min-height: 75vh; padding: 2.5rem 1rem;">
-    <div class="registration-card" style="max-width: 440px; width: 100%; border-top: 4px solid var(--fabric-teal); padding: 2.25rem; box-shadow: 0 16px 40px rgba(0, 120, 212, 0.12);">
-      
-      <div class="text-center mb-4">
-        <div class="welcome-company-logo-wrap" style="margin-bottom: 1.25rem;">
-          <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." style="height: 48px; max-width: 240px; object-fit: contain;">
-        </div>
-        
-        <div class="hero-pill-badge mb-2" style="padding: 0.35rem 0.95rem; font-size: 0.8rem;">
-          <img src="assets/fabric-icon.svg" width="16" height="16" alt="Fabric" style="vertical-align: middle;">
-          <span>Admin Authentication</span>
-        </div>
-        
-        <h2 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-top: 0.65rem; margin-bottom: 0.25rem;">Presenter Sign In</h2>
-        <p class="text-muted" style="font-size: 0.84rem; line-height: 1.4;">Enter authorized credentials to access live attendee metrics and presentation controls.</p>
-      </div>
-
-      <form id="admin-login-form" novalidate>
-        <div class="form-group mb-3">
-          <label class="form-label" for="admin-user" style="font-weight: 700; font-size: 0.88rem;">
-            <i class="bi bi-person-fill text-teal"></i> Username
-          </label>
-          <input type="text" id="admin-user" class="form-input" placeholder="e.g. ubtiadmin" autocomplete="username" required>
-        </div>
-
-        <div class="form-group mb-3">
-          <label class="form-label" for="admin-pass" style="font-weight: 700; font-size: 0.88rem;">
-            <i class="bi bi-lock-fill text-cyan"></i> Password
-          </label>
-          <div style="position: relative;">
-            <input type="password" id="admin-pass" class="form-input" placeholder="••••••••••••" autocomplete="current-password" required style="padding-right: 2.75rem;">
-            <button type="button" id="btn-toggle-pass" aria-label="Toggle password visibility" style="position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 0;">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        </div>
-
-        <div id="admin-login-error" class="d-none" style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.85rem; margin-bottom: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span id="admin-login-error-text">Invalid username or password.</span>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-lg" id="btn-admin-submit" style="width: 100%;">
-          <span>Sign In to Admin Console</span>
-          <i class="bi bi-box-arrow-in-right"></i>
-        </button>
-
-        <div class="text-center mt-3">
-          <a href="index.html" class="text-muted" style="font-size: 0.8rem; text-decoration: none;">
-            <i class="bi bi-arrow-left"></i> Return to Participant View
-          </a>
-        </div>
-      </form>
-    </div>
-  </main>
-
-  <div id="view-admin-dashboard" class="container-wide d-none">
+  <main id="view-admin-dashboard" class="container-wide">
     <!-- Compact Notice Banner -->
     <div class="glass-card mb-3" style="border-left: 4px solid var(--fabric-teal); padding: 0.85rem 1.25rem;">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -424,7 +375,7 @@
         </form>
       </div>
     </section>
-  </div>
+  </main>
 
   <!-- Detail Modal -->
   <div class="modal-backdrop" id="modal-detail" role="dialog" aria-modal="true">

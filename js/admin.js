@@ -41,8 +41,6 @@
        Password: FAIAD@2026
      ========================================================================= */
   const AUTH_KEY = 'ubti_admin_auth_v1';
-  const VALID_USER = 'ubtiadmin';
-  const VALID_PASS = 'FAIAD@2026';
 
   function isAuth() {
     return sessionStorage.getItem(AUTH_KEY) === 'true';
@@ -56,50 +54,23 @@
     }
   }
 
-  function checkAuthUI() {
-    const loginView = document.getElementById('view-admin-login');
-    const dashView = document.getElementById('view-admin-dashboard');
-    const actionsBar = document.getElementById('admin-actions-bar');
-
-    if (isAuth()) {
-      if (loginView) loginView.classList.add('d-none');
-      if (dashView) dashView.classList.remove('d-none');
-      if (actionsBar) {
-        actionsBar.classList.remove('d-none');
-        actionsBar.style.display = 'inline-flex';
-      }
-
-      // Initialize & render admin dashboard
-      loadResponsesFromStorage();
-      populateCompanyFilter();
-      populateQuestionFilterOptions();
-      applyFilters();
-      initCharts();
-      loadConfigForm();
-    } else {
-      if (loginView) loginView.classList.remove('d-none');
-      if (dashView) dashView.classList.add('d-none');
-      if (actionsBar) {
-        actionsBar.classList.add('d-none');
-        actionsBar.style.display = 'none';
-      }
-
-      // Destroy charts on logout
-      Object.keys(ChartInstances).forEach(k => {
-        if (ChartInstances[k]) {
-          try { ChartInstances[k].destroy(); } catch (_) {}
-          delete ChartInstances[k];
-        }
-      });
-    }
-  }
-
   /* =========================================================================
      Initialization
      ========================================================================= */
   function initAdmin() {
+    // If not authenticated, redirect immediately to separate login page
+    if (!isAuth()) {
+      window.location.replace('ubtiadmin.html');
+      return;
+    }
+
     setupEventListeners();
-    checkAuthUI();
+    loadResponsesFromStorage();
+    populateCompanyFilter();
+    populateQuestionFilterOptions();
+    applyFilters();
+    initCharts();
+    loadConfigForm();
   }
 
   function loadResponsesFromStorage() {
@@ -110,57 +81,13 @@
      Event Listeners
      ========================================================================= */
   function setupEventListeners() {
-    // Admin Authentication Form Handlers
-    const loginForm = document.getElementById('admin-login-form');
-    const userInput = document.getElementById('admin-user');
-    const passInput = document.getElementById('admin-pass');
-    const loginError = document.getElementById('admin-login-error');
-    const togglePassBtn = document.getElementById('btn-toggle-pass');
-
-    if (togglePassBtn && passInput) {
-      togglePassBtn.addEventListener('click', () => {
-        const isPass = passInput.type === 'password';
-        passInput.type = isPass ? 'text' : 'password';
-        togglePassBtn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
-      });
-    }
-
-    if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const u = (userInput ? userInput.value : '').trim();
-        const p = (passInput ? passInput.value : '').trim();
-
-        if (u === VALID_USER && p === VALID_PASS) {
-          if (loginError) loginError.classList.add('d-none');
-          setAuth(true);
-          showToast('Welcome, ubtiadmin! Admin console unlocked.', 'success');
-          checkAuthUI();
-        } else {
-          if (loginError) {
-            loginError.classList.remove('d-none');
-            const errText = document.getElementById('admin-login-error-text');
-            if (errText) errText.textContent = 'Invalid username or password. Please verify your credentials.';
-          }
-          if (passInput) {
-            passInput.value = '';
-            passInput.focus();
-          }
-        }
-      });
-    }
-
     // Admin Logout Button
     const logoutBtn = document.getElementById('btn-admin-logout');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
         if (confirm('Log out of the Admin Console?')) {
           setAuth(false);
-          showToast('Logged out of Admin Console.', 'info');
-          if (userInput) userInput.value = '';
-          if (passInput) passInput.value = '';
-          if (loginError) loginError.classList.add('d-none');
-          checkAuthUI();
+          window.location.replace('ubtiadmin.html');
         }
       });
     }

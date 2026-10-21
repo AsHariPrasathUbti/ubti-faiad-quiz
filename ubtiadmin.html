@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Console — Fabric Analyst in a Day | UB Technology Innovations Inc.</title>
-  <meta name="description" content="Presenter analytics, live responses, charts, filters, and exports for Fabric Analyst in a Day by UB Technology Innovations Inc.">
+  <title>Admin Sign In — Fabric Analyst in a Day | UB Technology Innovations</title>
+  <meta name="description" content="Presenter authentication for Fabric Analyst in a Day by UB Technology Innovations Inc.">
 
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,497 +14,244 @@
   <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <!-- Application Stylesheet in Light Theme -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    // If already authenticated in this session, jump directly to dashboard
+    if (sessionStorage.getItem('ubti_admin_auth_v1') === 'true') {
+      window.location.replace('admin.html');
+    }
+  </script>
+
+  <style>
+    /* Full Page Center Layout */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 120, 212, 0.18);
+      border-top: 4px solid var(--fabric-teal);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 48px -10px rgba(0, 120, 212, 0.16), 0 8px 24px -6px rgba(15, 23, 42, 0.08);
+      max-width: 440px;
+      width: 100%;
+      padding: 2.5rem 2.25rem;
+      animation: cardEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .shake {
+      animation: shakeAnim 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    @keyframes shakeAnim {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+  </style>
 </head>
 <body>
 
   <!-- Background Watermark Logo -->
   <img src="assets/ubti-logo.svg" alt="UB Technology Innovations Watermark" class="bg-watermark-logo">
 
-  <!-- Ambient Light Mesh -->
+  <!-- Ambient Background Gradients -->
   <div class="bg-mesh"></div>
   <div class="bg-grid-pattern"></div>
 
-  <!-- Compact Sleek Admin Header with Company Logo -->
-  <header class="app-header admin-compact">
-    <a href="ubtiadmin.html" class="brand-wrapper">
-      <img src="assets/fabric-icon.svg" alt="Fabric" class="fabric-icon-img">
-      <div class="brand-info">
-        <h1>Fabric Analyst in a Day — Admin Console</h1>
-      </div>
-    </a>
-
-    <div class="admin-header-actions">
-      <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." class="company-header-logo" style="margin-right: 0.5rem;">
-      <!-- Participant View Link -->
-      <a href="index.html" class="btn btn-outline btn-sm">
-        <i class="bi bi-play-circle-fill text-teal"></i>
-        <span>Participant View</span>
-      </a>
-
-      <!-- Authenticated Presenter Action Group (Hidden when not signed in) -->
-      <div id="admin-actions-bar" class="d-none" style="display: none; align-items: center; gap: 0.5rem;">
-        <!-- Quick Demo Seed Data -->
-        <button class="btn btn-outline btn-sm" id="btn-seed-sample-data" title="Populate sample attendees for rehearsal">
-          <i class="bi bi-magic text-cyan"></i>
-          <span>Load Demo Data</span>
-        </button>
-
-        <!-- Delete All Responses Button -->
-        <button class="btn btn-outline btn-sm" id="btn-clear-all-data" style="border-color: rgba(220, 38, 38, 0.4); color: #dc2626;" title="Wipe all local response records">
-          <i class="bi bi-trash3-fill text-danger"></i>
-          <span>Delete All Responses</span>
-        </button>
-
-        <!-- Logout Button -->
-        <button class="btn btn-outline btn-sm" id="btn-admin-logout" title="Sign out of Admin Console">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Log Out</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- =========================================================================
-       ADMIN LOGIN VIEW (Shown when unauthenticated)
-       ========================================================================= -->
-  <main id="view-admin-login" class="container d-flex align-items-center justify-content-center" style="min-height: 75vh; padding: 2.5rem 1rem;">
-    <div class="registration-card" style="max-width: 440px; width: 100%; border-top: 4px solid var(--fabric-teal); padding: 2.25rem; box-shadow: 0 16px 40px rgba(0, 120, 212, 0.12);">
+  <!-- Dedicated Centered Login Container -->
+  <main class="login-wrapper">
+    <div class="login-card" id="login-card">
       
+      <!-- Brand & Header -->
       <div class="text-center mb-4">
-        <div class="welcome-company-logo-wrap" style="margin-bottom: 1.25rem;">
-          <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." style="height: 48px; max-width: 240px; object-fit: contain;">
+        <div style="margin-bottom: 1.25rem;">
+          <a href="https://ubtiinc.com/" target="_blank" rel="noopener noreferrer">
+            <img src="assets/ubti-logo.png" alt="UB Technology Innovations Inc." style="height: 48px; max-width: 240px; object-fit: contain;">
+          </a>
         </div>
         
         <div class="hero-pill-badge mb-2" style="padding: 0.35rem 0.95rem; font-size: 0.8rem;">
           <img src="assets/fabric-icon.svg" width="16" height="16" alt="Fabric" style="vertical-align: middle;">
-          <span>Admin Authentication</span>
+          <span>Fabric Analyst in a Day</span>
         </div>
         
-        <h2 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-top: 0.65rem; margin-bottom: 0.25rem;">Presenter Sign In</h2>
-        <p class="text-muted" style="font-size: 0.84rem; line-height: 1.4;">Enter authorized credentials to access live attendee metrics and presentation controls.</p>
+        <h1 style="font-size: 1.45rem; font-weight: 800; color: #0f172a; margin-top: 0.65rem; margin-bottom: 0.25rem;">
+          Presenter Sign In
+        </h1>
+        <p class="text-muted" style="font-size: 0.85rem; line-height: 1.4;">
+          Enter credentials to access live attendee metrics & presentation controls.
+        </p>
       </div>
 
-      <form id="admin-login-form" novalidate>
+      <!-- Authentication Form -->
+      <form id="admin-login-form" novalidate autocomplete="on">
+        
+        <!-- Username Field -->
         <div class="form-group mb-3">
           <label class="form-label" for="admin-user" style="font-weight: 700; font-size: 0.88rem;">
             <i class="bi bi-person-fill text-teal"></i> Username
           </label>
-          <input type="text" id="admin-user" class="form-input" placeholder="e.g. ubtiadmin" autocomplete="username" required>
+          <input 
+            type="text" 
+            id="admin-user" 
+            class="form-input" 
+            placeholder="ubtiadmin" 
+            autocomplete="username" 
+            required 
+            autofocus
+          >
         </div>
 
+        <!-- Password Field -->
         <div class="form-group mb-3">
           <label class="form-label" for="admin-pass" style="font-weight: 700; font-size: 0.88rem;">
             <i class="bi bi-lock-fill text-cyan"></i> Password
           </label>
           <div style="position: relative;">
-            <input type="password" id="admin-pass" class="form-input" placeholder="••••••••••••" autocomplete="current-password" required style="padding-right: 2.75rem;">
-            <button type="button" id="btn-toggle-pass" aria-label="Toggle password visibility" style="position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 0;">
+            <input 
+              type="password" 
+              id="admin-pass" 
+              class="form-input" 
+              placeholder="••••••••••••" 
+              autocomplete="current-password" 
+              required 
+              style="padding-right: 2.75rem;"
+            >
+            <button 
+              type="button" 
+              id="btn-toggle-pass" 
+              aria-label="Toggle password visibility" 
+              style="position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.15rem; padding: 0;"
+            >
               <i class="bi bi-eye"></i>
             </button>
           </div>
         </div>
 
-        <div id="admin-login-error" class="d-none" style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.85rem; margin-bottom: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+        <!-- Error Feedback Banner -->
+        <div 
+          id="admin-login-error" 
+          class="d-none" 
+          style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; font-size: 0.85rem; margin-bottom: 1.15rem; display: flex; align-items: center; gap: 0.5rem;"
+        >
           <i class="bi bi-exclamation-triangle-fill"></i>
           <span id="admin-login-error-text">Invalid username or password.</span>
         </div>
 
+        <!-- Submit Button -->
         <button type="submit" class="btn btn-primary btn-lg" id="btn-admin-submit" style="width: 100%;">
           <span>Sign In to Admin Console</span>
           <i class="bi bi-box-arrow-in-right"></i>
         </button>
 
+        <!-- Auxiliary Navigation -->
         <div class="text-center mt-3">
-          <a href="index.html" class="text-muted" style="font-size: 0.8rem; text-decoration: none;">
-            <i class="bi bi-arrow-left"></i> Return to Participant View
+          <a href="index.html" class="text-muted" style="font-size: 0.82rem; text-decoration: none;">
+            <i class="bi bi-arrow-left"></i> Return to Participant Quiz
           </a>
         </div>
       </form>
     </div>
+
+    <!-- Page Footer Note -->
+    <div class="text-center mt-4" style="color: #64748b; font-size: 0.78rem;">
+      &copy; 2026 <a href="https://ubtiinc.com/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">UB Technology Innovations Inc.</a> All rights reserved.
+    </div>
   </main>
 
-  <div id="view-admin-dashboard" class="container-wide d-none">
-    <!-- Compact Notice Banner -->
-    <div class="glass-card mb-3" style="border-left: 4px solid var(--fabric-teal); padding: 0.85rem 1.25rem;">
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div class="d-flex align-items-center gap-2">
-          <i class="bi bi-info-circle-fill text-teal"></i>
-          <span style="font-size: 0.86rem; color: var(--text-main);">
-            <strong>Local Event Console:</strong> Responses persist in this browser. To consolidate attendee files, click <strong>Import JSON</strong> below.
-          </span>
-        </div>
-      </div>
-    </div>
+  <!-- Login Logic Script -->
+  <script>
+    (function() {
+      const AUTH_KEY = 'ubti_admin_auth_v1';
+      const VALID_USER = 'ubtiadmin';
+      const VALID_PASS = 'FAIAD@2026';
 
-    <!-- Navigation Tabs -->
-    <nav class="tabs-nav" aria-label="Admin Navigation Tabs">
-      <button class="tab-btn active" data-tab="overview">
-        <i class="bi bi-pie-chart-fill"></i>
-        <span>Analytics & Charts</span>
-      </button>
-      <button class="tab-btn" data-tab="participants">
-        <i class="bi bi-people-fill"></i>
-        <span>Participants & Responses</span>
-      </button>
-      <button class="tab-btn" data-tab="config">
-        <i class="bi bi-gear-fill"></i>
-        <span>Event Settings</span>
-      </button>
-    </nav>
+      const loginForm = document.getElementById('admin-login-form');
+      const userInput = document.getElementById('admin-user');
+      const passInput = document.getElementById('admin-pass');
+      const loginError = document.getElementById('admin-login-error');
+      const loginErrorText = document.getElementById('admin-login-error-text');
+      const togglePassBtn = document.getElementById('btn-toggle-pass');
+      const loginCard = document.getElementById('login-card');
+      const submitBtn = document.getElementById('btn-admin-submit');
 
-    <!-- Top KPI Metric Cards -->
-    <section class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-people-fill"></i></div>
-        <div class="kpi-val" id="kpi-total-participants">0</div>
-        <div class="kpi-label">Total Participants</div>
-      </div>
+      // Password visibility toggle
+      if (togglePassBtn && passInput) {
+        togglePassBtn.addEventListener('click', function() {
+          const isPass = passInput.type === 'password';
+          passInput.type = isPass ? 'text' : 'password';
+          togglePassBtn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+        });
+      }
 
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
-        <div class="kpi-val" id="kpi-completed-quizzes">0</div>
-        <div class="kpi-label">Completed Quizzes</div>
-      </div>
+      // Handle Submit
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const u = (userInput ? userInput.value : '').trim();
+          const p = (passInput ? passInput.value : '').trim();
 
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
-        <div class="kpi-val" id="kpi-inprogress-quizzes">0</div>
-        <div class="kpi-label">In-Progress</div>
-      </div>
+          if (u === VALID_USER && p === VALID_PASS) {
+            if (loginError) loginError.classList.add('d-none');
+            sessionStorage.setItem(AUTH_KEY, 'true');
 
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-graph-up-arrow"></i></div>
-        <div class="kpi-val" id="kpi-completion-rate">0%</div>
-        <div class="kpi-label">Completion Rate</div>
-      </div>
+            // Visual feedback before transition
+            if (submitBtn) {
+              submitBtn.innerHTML = '<span>Verifying...</span> <i class="bi bi-check-circle-fill"></i>';
+              submitBtn.disabled = true;
+            }
 
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-trophy-fill"></i></div>
-        <div class="kpi-val" id="kpi-avg-score">0</div>
-        <div class="kpi-label">Average Score</div>
-      </div>
+            setTimeout(function() {
+              window.location.replace('admin.html');
+            }, 300);
+          } else {
+            if (loginError) {
+              loginError.classList.remove('d-none');
+              if (loginErrorText) {
+                loginErrorText.textContent = 'Invalid username or password. Please verify credentials.';
+              }
+            }
 
-      <div class="kpi-card">
-        <div class="kpi-icon"><i class="bi bi-chat-left-dots-fill"></i></div>
-        <div class="kpi-val" id="kpi-total-responses">0</div>
-        <div class="kpi-label">Total Answers</div>
-      </div>
-    </section>
+            // Trigger shake animation
+            if (loginCard) {
+              loginCard.classList.remove('shake');
+              void loginCard.offsetWidth; // force reflow
+              loginCard.classList.add('shake');
+            }
 
-    <!-- Filters Toolbar -->
-    <section class="filter-panel">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 style="font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
-          <i class="bi bi-funnel-fill text-teal"></i> Live Filters & Drill-Down
-        </h4>
-        <button class="btn btn-outline btn-sm" id="btn-reset-filters">
-          <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
-        </button>
-      </div>
-
-      <div class="filter-grid">
-        <div class="filter-group">
-          <label for="filter-search">Search Participant</label>
-          <input type="text" id="filter-search" class="filter-input" placeholder="Search by name or email...">
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-company">Company / Organization</label>
-          <select id="filter-company" class="filter-input">
-            <option value="">All Companies</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-status">Quiz Status</label>
-          <select id="filter-status" class="filter-input">
-            <option value="">All Statuses</option>
-            <option value="completed">Completed Only</option>
-            <option value="in-progress">In-Progress Only</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-score">Score Bracket</label>
-          <select id="filter-score" class="filter-input">
-            <option value="">All Scores</option>
-            <option value="low">Under 1,000 pts</option>
-            <option value="mid">1,000 – 1,400 pts</option>
-            <option value="high">Above 1,400 pts (Top Tier)</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-question">Drill into Question</label>
-          <select id="filter-question" class="filter-input">
-            <option value="">All Questions</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="filter-answer">Answer Option Match</label>
-          <select id="filter-answer" class="filter-input" disabled>
-            <option value="">Any Answer</option>
-          </select>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 1: ANALYTICS & CHARTS -->
-    <section id="tab-content-analytics">
-      <div class="charts-grid">
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-clock-history text-cyan"></i> Attendee Registrations Timeline</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-registrations"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-pie-chart text-teal"></i> Quiz Completion Ratio</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-completion-donut"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-server text-cyan"></i> Existing Data Warehouse Platforms (Q1)</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-platforms"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-stars text-purple"></i> Microsoft Fabric Experience Level (Q6)</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-experience"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Top Data Challenges (Q5)</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-challenges"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <div class="chart-header">
-            <h3 class="chart-title"><i class="bi bi-hand-thumbs-up-fill text-teal"></i> Desired Hands-on Workloads (Q15)</h3>
-          </div>
-          <div class="chart-container-inner">
-            <canvas id="chart-workloads"></canvas>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 2: PARTICIPANTS TABLE & EXPORTS -->
-    <section id="tab-content-participants" class="d-none">
-      <div class="glass-card mb-4" style="padding: 1.15rem 1.5rem;">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-          <div>
-            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem;">Participant Data & Exports</h3>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Export sanitized reports for enterprise discovery and client follow-up.</p>
-          </div>
-
-          <div class="d-flex gap-2 flex-wrap">
-            <button class="btn btn-outline btn-sm" id="btn-export-participants-csv">
-              <i class="bi bi-filetype-csv text-teal"></i> Participants CSV
-            </button>
-            <button class="btn btn-outline btn-sm" id="btn-export-responses-csv">
-              <i class="bi bi-file-earmark-spreadsheet text-cyan"></i> Question-Level CSV
-            </button>
-            <button class="btn btn-outline btn-sm" id="btn-export-filtered-csv">
-              <i class="bi bi-funnel"></i> Export Filtered
-            </button>
-            <button class="btn btn-outline btn-sm" id="btn-export-json">
-              <i class="bi bi-filetype-json text-warning"></i> Raw JSON Backup
-            </button>
-            <button class="btn btn-primary btn-sm" id="btn-open-import-modal">
-              <i class="bi bi-upload"></i> Import JSON
-            </button>
-            <button class="btn btn-secondary btn-sm" id="btn-print-report">
-              <i class="bi bi-printer"></i> Print / PDF
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="table-responsive">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th data-sort="name">Participant Name <i class="bi bi-arrow-down-up"></i></th>
-              <th>Email</th>
-              <th data-sort="company">Company <i class="bi bi-arrow-down-up"></i></th>
-              <th data-sort="date">Started At <i class="bi bi-arrow-down-up"></i></th>
-              <th data-sort="status">Status <i class="bi bi-arrow-down-up"></i></th>
-              <th data-sort="totalScore">Total Score <i class="bi bi-arrow-down-up"></i></th>
-              <th>Knowledge Accuracy</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="participants-table-body">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- TAB 3: EVENT CONFIGURATION -->
-    <section id="tab-content-config" class="d-none">
-      <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
-        <h3 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem;">Event & Quiz Configuration</h3>
-        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.75rem;">
-          Customize event parameters and scoring behavior stored in this browser.
-        </p>
-
-        <form id="admin-config-form">
-          <div class="form-group">
-            <label class="form-label" for="cfg-event-title">Event Title</label>
-            <input type="text" id="cfg-event-title" class="form-input">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="cfg-event-subtitle">Event Subtitle / Tagline</label>
-            <input type="text" id="cfg-event-subtitle" class="form-input">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="cfg-organizer-company">Presenter / Partner Organization</label>
-            <input type="text" id="cfg-organizer-company" class="form-input">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="cfg-speed-bonus-max">Max Speed Bonus Points (Knowledge Questions)</label>
-            <input type="number" id="cfg-speed-bonus-max" class="form-input" min="0" max="100">
-          </div>
-
-          <div class="mode-toggle-card mb-3">
-            <div class="mode-toggle-info">
-              <h4>Speed Bonus Calculation</h4>
-              <p>Award faster knowledge answers bonus points scaled by remaining seconds.</p>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="cfg-speed-bonus-enabled">
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div class="mode-toggle-card mb-4">
-            <div class="mode-toggle-info">
-              <h4>Shuffle Answer Options</h4>
-              <p>Randomizes answer order on questions where sequence is not ordered.</p>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="cfg-shuffle-options">
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-            <i class="bi bi-save"></i> Save Configuration
-          </button>
-        </form>
-      </div>
-    </section>
-  </div>
-
-  <!-- Detail Modal -->
-  <div class="modal-backdrop" id="modal-detail" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modal-detail-name">Participant Answers</h3>
-        <button class="btn-icon" id="close-detail-modal" aria-label="Close dialog">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-meta-grid mb-4" id="modal-detail-meta"></div>
-        <div id="modal-detail-answers"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="document.getElementById('modal-detail').classList.remove('show');">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div class="modal-backdrop" id="modal-import" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 class="modal-title"><i class="bi bi-upload text-teal"></i> Import Participant Responses</h3>
-        <button class="btn-icon" id="close-import-modal" aria-label="Close dialog">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="mb-3 text-muted" style="font-size: 0.9rem;">
-          Consolidate JSON results exported from individual participant devices into this presenter dashboard.
-        </p>
-
-        <div class="form-group mb-4">
-          <label class="form-label" for="import-file-input">Select JSON Backup File</label>
-          <input type="file" id="import-file-input" class="form-input" accept=".json,application/json">
-        </div>
-
-        <div id="import-preview-box" class="glass-card mb-4" style="padding: 1rem; min-height: 80px; display: flex; align-items: center; justify-content: center;">
-          <span class="text-muted" style="font-size: 0.85rem;">Select a file above to inspect dataset contents.</span>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Import Strategy</label>
-          <div class="d-flex gap-4">
-            <label style="cursor: pointer;">
-              <input type="radio" name="import-mode" value="merge" checked>
-              <strong>Merge</strong> <span class="text-muted">(Add new & update matching IDs)</span>
-            </label>
-            <label style="cursor: pointer;">
-              <input type="radio" name="import-mode" value="replace">
-              <strong>Replace</strong> <span class="text-danger">(Overwrites all current data)</span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" onclick="document.getElementById('modal-import').classList.remove('show');">Cancel</button>
-        <button class="btn btn-primary" id="btn-confirm-import" disabled>
-          <i class="bi bi-check2"></i> Execute Import
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sleek Compact Footer -->
-  <footer class="app-footer">
-    <div class="container text-center">
-      <p class="footer-copyright">
-        &copy; 2026 <a href="https://ubtiinc.com/" target="_blank" rel="noopener noreferrer">UB Technology Innovations Inc.</a> All rights reserved.
-      </p>
-    </div>
-  </footer>
-
-  <div class="toast-container" id="toast-container" aria-live="polite"></div>
-
-  <!-- Core Scripts -->
-  <script src="js/storage.js"></script>
-  <script src="js/questions.js"></script>
-  <script src="js/admin.js"></script>
+            if (passInput) {
+              passInput.value = '';
+              passInput.focus();
+            }
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

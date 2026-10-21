@@ -25,7 +25,11 @@ A modern, responsive, Kahoot-inspired interactive web application designed for l
   - **Section D**: Priorities & Hands-on Workloads (Strategic priorities, desired workloads).
   - **Section E**: Business Challenges & Support (Paragraph feedback on current business hurdles and support required from UB Technology Innovations).
 
-- **Comprehensive Presenter / Admin Dashboard (`admin.html`)**:
+- **Presenter / Admin Dashboard (`ubtiadmin` / `admin.html`)**:
+  - Protected by presenter authentication:
+    - **URL**: `ubtiadmin` (e.g. `https://ashariprasathubti.github.io/ubti-faiad-quiz/ubtiadmin`)
+    - **Username**: `ubtiadmin`
+    - **Password**: `FAIAD@2026`
   - 6 Real-time KPI summary cards (Total participants, completed, in-progress, completion rate, average score, total answers).
   - 6 Chart.js dynamic visualizations with live filtering.
   - Multidimensional drill-down filters (Search, company, completion status, score bracket, specific question & answer option).
@@ -36,6 +40,7 @@ A modern, responsive, Kahoot-inspired interactive web application designed for l
     - **JSON Full Dataset**: Complete session backup for cross-device analysis.
   - Rehearsal sample data generator (pre-loads realistic participant records for rehearsals).
   - "Delete All Responses" button to wipe data cleanly for live sessions.
+  - Session-based logout to protect dashboard visibility.
 
 - **Zero-Backend Architecture & GitHub Pages Ready**:
   - 100% client-side HTML5, CSS3, and Vanilla JavaScript (ES6+).
@@ -54,7 +59,10 @@ FAIAD/
 ├── .nojekyll                # GitHub Pages static asset routing
 ├── README.md                # Project documentation
 ├── index.html               # Participant welcome, quiz engine, & results screen
-├── admin.html               # Presenter analytics console & live response dashboard
+├── ubtiadmin.html           # Presenter analytics portal & sign-in dashboard (URL: /ubtiadmin)
+├── ubtiadmin/               # Fallback directory redirect for /ubtiadmin/
+│   └── index.html
+├── admin.html               # Presenter analytics console mirror & redirect
 ├── assets/                  # Brand logos and vector graphics
 │   ├── fabric-icon.svg      # Official Microsoft Fabric vector icon
 │   ├── logo.png             # UB Technology Innovations Inc. square avatar
